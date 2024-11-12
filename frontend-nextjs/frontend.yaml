@@ -15,7 +15,7 @@ spec:
     spec:
         containers:
         - name: frontend-nextjs
-          image: registry.digitalocean.com/dagligvare/nextjs-frontend-app@sha256:152da2344ed74e9c1c9298b63ca6c5caba0d2bdcc5e49493713aab9cbcd2d2e3
+          image: <IMAGE>
           imagePullPolicy: IfNotPresent
           env:
             - name: BACKEND_URL

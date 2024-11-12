@@ -7,5 +7,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: echo
-        run: echo "Hello, World!"
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Update deployment file
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/dagligvare/nextjs-frontend-app:'${TAG}'|' $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
+      - name: Verify deployment
+        run: kubectl rollout status deployment/python-example
