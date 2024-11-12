@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: backend-springboot-deployment
+    namespace: dagligvare
+spec:
+  selector:
+    matchLabels:
+        app: backend-springboot
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backend-springboot
+    spec:
+      containers:
+        - name: backend-springboot
+          image: registry.digitalocean.com/dagligvare/spring-boot-app@sha256:217ffd23182930a3403782dec8cec6994d48704cf8f9b8a8f905ecc6acba29ed
+          imagePullPolicy: IfNotPresent
+          ports:
+              - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-service:5432/dagligvare
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                    name: postgres-secret
+                    key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                      name: postgres-secret
+                      key: password
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                      name: postgres-secret
+                      key: password
+            - name: FLYWAY_USER
+              valueFrom:
+                  secretKeyRef:
+                      name: postgres-secret
+                      key: username
+            - name: FLYWAY_URL
+              value: jdbc:postgresql://postgres-service:5432/dagligvare
+

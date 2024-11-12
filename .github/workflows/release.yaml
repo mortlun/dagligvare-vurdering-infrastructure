@@ -1,0 +1,11 @@
+name: Release
+on:
+  repository_dispatch:
+    types: [release]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: echo "Hello, World!"
