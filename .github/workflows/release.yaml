@@ -10,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/dagligvare/nextjs-frontend-app:'${TAG}'|' $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
+        run: sed -i 's|<IMAGE>|${{ github.event.client_payload.image }}|' $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -22,4 +22,4 @@ jobs:
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
       - name: Verify deployment
-        run: kubectl rollout status deployment/python-example
+        run: kubectl rollout status deployment/frontend-nextjs
