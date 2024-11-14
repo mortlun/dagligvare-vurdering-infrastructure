@@ -9,8 +9,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Determine Deployment File Path
+        id: deployment-file
+        run: |
+          # Construct the manifest file path based on app and environment
+          export MANIFEST_FILE="apps/${{ github.event.client_payload.app }}/${{ github.event.client_payload.environment }}/deploy.yaml"
+          echo "file=${MANIFEST_FILE}" >> $GITHUB_ENV
       - name: Update deployment file
-        run: sed -i 's|<IMAGE>|${{ github.event.client_payload.image }}|' $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
+        run: sed -i 's|<IMAGE>|${{ github.event.client_payload.image }}|' $GITHUB_WORKSPACE/${{ env.file }}
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -20,6 +26,6 @@ jobs:
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/frontend-nextjs/frontend.yaml
-      - name: Verify deployment
-        run: kubectl rollout status deployment/frontend-nextjs
+        run: kubectl apply -f $GITHUB_WORKSPACE/${{ env.file }}
+          DEPLOYMENT_NAME="${{ github.event.client_payload.app }}"
+          kubectl rollout status deployment/$DEPLOYMENT_NAME

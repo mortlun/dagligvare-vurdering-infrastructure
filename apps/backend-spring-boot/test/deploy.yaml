@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-springboot
-          image: registry.digitalocean.com/dagligvare/spring-boot-app@sha256:217ffd23182930a3403782dec8cec6994d48704cf8f9b8a8f905ecc6acba29ed
+          image: <IMAGE>
           imagePullPolicy: IfNotPresent
           ports:
               - containerPort: 8080
@@ -47,3 +47,16 @@ spec:
             - name: FLYWAY_URL
               value: jdbc:postgresql://postgres-service:5432/dagligvare
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dagligvare
+  name: backend-service
+spec:
+  selector:
+    app: backend-springboot
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
