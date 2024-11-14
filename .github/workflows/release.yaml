@@ -30,4 +30,4 @@ jobs:
       - name: Verify Deployment
         run: |
           DEPLOYMENT_NAME="${{ github.event.client_payload.app }}"
-          kubectl rollout status $DEPLOYMENT_NAME-deployment -n dagligvare
+          kubectl rollout status deployment/$DEPLOYMENT_NAME-deployment -n dagligvare
