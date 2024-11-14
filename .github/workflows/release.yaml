@@ -13,7 +13,7 @@ jobs:
         id: deployment-file
         run: |
           # Construct the manifest file path based on app and environment
-          export MANIFEST_FILE="apps/${{ github.event.client_payload.app }}/${{ github.event.client_payload.environment }}/deploy.yaml"
+          export MANIFEST_FILE="apps/${{ github.event.client_payload.app }}/${{ github.event.client_payload.env }}/deploy.yaml"
           echo "file=${MANIFEST_FILE}" >> $GITHUB_ENV
       - name: Update deployment file
         run: sed -i 's|<IMAGE>|${{ github.event.client_payload.image }}|' $GITHUB_WORKSPACE/${{ env.file }}
