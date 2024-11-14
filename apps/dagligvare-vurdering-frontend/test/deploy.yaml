@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: frontend-nextjs-deployment
+    name: dagligvare-vurdering-frontend-deployment
     namespace: dagligvare
 spec:
   selector:
