@@ -21,7 +21,11 @@ spec:
               - containerPort: 8080
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres-service:5432/dagligvare
+              valueFrom:
+                    secretKeyRef:
+                        name: postgres-secret
+                        key: host
+              #value: jdbc:postgresql://private-dbaas-db-9742281-do-user-17805979-0.d.db.ondigitalocean.com:25060/dagligvare
             - name: SPRING_PROFILES_ACTIVE
               value: prod
             - name: SPRING_DATASOURCE_USERNAME
@@ -45,7 +49,10 @@ spec:
                       name: postgres-secret
                       key: username
             - name: FLYWAY_URL
-              value: jdbc:postgresql://postgres-service:5432/dagligvare
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: host
 
 ---
 apiVersion: v1
@@ -73,3 +80,4 @@ data:
   username: <POSTGRES_USER>
   password: <POSTGRES_PASSWORD>
   database: <POSTGRES_DB>
+  host: <POSTGRES_HOST>
