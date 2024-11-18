@@ -60,3 +60,16 @@ spec:
     - port: 8080
       targetPort: 8080
   type: ClusterIP
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: postgres-secret
+    namespace: dagligvare
+type: Opaque
+data:
+  username: <POSTGRES_USER>
+  password: <POSTGRES_PASSWORD>
+  database: <POSTGRES_DB>

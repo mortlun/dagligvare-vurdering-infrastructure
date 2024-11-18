@@ -17,6 +17,12 @@ jobs:
           echo "file=${MANIFEST_FILE}" >> $GITHUB_ENV
       - name: Update deployment file
         run: sed -i 's|<IMAGE>|${{ github.event.client_payload.image }}|' $GITHUB_WORKSPACE/${{ env.file }}
+      - name: Update Secrets in Kubernetes Secret Manifest
+        if: ${{ github.event.client_payload.app }} == "dagligvare-vurdering-backend"
+        run: |
+          sed -i 's|<POSTGRES_USER>|${{ secrets.POSTGRES_USER }}|' $GITHUB_WORKSPACE/${{ env.file }}
+          sed -i 's|<POSTGRES_PASSWORD>|${{ secrets.POSTGRES_PASSWORD }}|' $GITHUB_WORKSPACE/${{ env.file }}
+          sed -i 's|<POSTGRES_DB>|${{ secrets.POSTGRES_DB }}|' $GITHUB_WORKSPACE/${{ env.file }}
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
