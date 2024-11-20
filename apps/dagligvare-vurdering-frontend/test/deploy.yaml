@@ -44,7 +44,13 @@ kind: Ingress
 metadata:
   name: ingress-frontend
   namespace: dagligvare
+  annotations:
+    cert-manager.io/issuer: letsencrypt-nginx
 spec:
+  tls:
+    - hosts:
+        - stage.techscape.no
+      secretName: letsencrypt-nginx-frontend
   rules:
     - host: stage.techscape.no
       http:
