@@ -1,0 +1,54 @@
+name: Deploy to DigitalOcean Droplet
+
+on: workflow_dispatch
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DigitalOcean Droplet
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        with:
+          host: ${{ vars.HOST }}
+          key: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_USERNAME }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
+          envs: GITHUB_SHA, DIGITALOCEAN_ACCESS_TOKEN
+          script: |
+            set -e
+            # Navigate to the project directory
+            # Define the directory where the project will live
+            PROJECT_DIR=~/home/morlun-stage/src
+
+            # Check if the project directory already exists
+            if [ ! -d "$PROJECT_DIR" ]; then
+              echo "Cloning the repository..."
+              git clone git@github.com:mortlun/dagligvare-vurdering-infrastructure.git $PROJECT_DIR
+            else
+              echo "Project directory already exists, skipping clone."
+            fi   
+            # Navigate to the project directory
+            cd $PROJECT_DIR
+
+            # Export secrets from GitHub Secrets into the SSH session
+            export POSTGRES_DB=dagligvare
+            export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_COMPOSE }}
+            export POSTGRES_USER=${{ secrets.POSTGRES_USER_COMPOSE }}
+            export SPRING_BOOT_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-backend:latest
+            export NEXTJS_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-frontend:latest
+
+            echo "Logging in to DigitalOcean Container Registry..."
+            doctl registry login --expiry-seconds 1200 -t ${DIGITALOCEAN_ACCESS_TOKEN}
+            # Pull latest code from GitHub
+            git pull origin main
+            cd apps-docker-compose
+
+            # Pull the latest Docker images if necessary
+            docker compose pull
+
+            # Build and restart the Docker containers, passing the environment variables
+            docker compose up -d --build
