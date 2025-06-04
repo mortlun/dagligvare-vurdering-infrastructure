@@ -35,6 +35,8 @@ jobs:
             # Navigate to the project directory
             cd $PROJECT_DIR
 
+            echo "Export secrets"
+
             # Export secrets from GitHub Secrets into the SSH session
             export POSTGRES_DB=dagligvare
             export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_COMPOSE }}
