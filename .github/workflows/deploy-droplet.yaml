@@ -41,6 +41,7 @@ jobs:
             export POSTGRES_DB=dagligvare
             export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_COMPOSE }}
             export POSTGRES_USER=${{ secrets.POSTGRES_USER_COMPOSE }}
+            echo "Export here"
             export SPRING_BOOT_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-backend:latest
             export NEXTJS_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-frontend:latest
 
