@@ -39,8 +39,8 @@ jobs:
 
             # Export secrets from GitHub Secrets into the SSH session
             export POSTGRES_DB=dagligvare
+            echo ${{ secrets.POSTGRES_USER_COMPOSE }}
             export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD_COMPOSE }}
-            echo "Export here"
             export POSTGRES_USER=${{ secrets.POSTGRES_USER_COMPOSE }}
             export SPRING_BOOT_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-backend:latest
             export NEXTJS_APP_IMAGE=registry.digitalocean.com/dagligvare/dagligvare-vurdering-frontend:latest
